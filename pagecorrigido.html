@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validador de Cartões de Crédito</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .container h1 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 1rem;
+            text-align: center;
+        }
+        .valid {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .invalid {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Validador de Cartões</h1>
+        <label for="card-number">Digite o número do cartão:</label>
+        <input type="text" id="card-number" placeholder="Ex: 4111 1111 1111 1111">
+        <button onclick="validateInput()">Validar</button>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        function validateCreditCard(cardNumber) {
+            const cardPatterns = {
+                Visa: /^4[0-9]{12}(?:[0-9]{3})?$/, // Starts with 4
+                MasterCard: /^(5[1-5][0-9]{14}|2(22[1-9]|2[3-9][0-9]|[3-6][0-9]{2}|7[01][0-9]|720)[0-9]{12})$/, // Starts with 51-55 or 2221-2720
+                Elo: /^(4011|4312|4389)/, // Starts with 4011, 4312, 4389 (expand if needed)
+                "American Express": /^3[47][0-9]{13}$/, // Starts with 34 or 37
+                Discover: /^(6011|65|64[4-9])[0-9]{12}$/, // Starts with 6011, 65, or 644-649
+                Hipercard: /^6062[0-9]{12}$/ // Starts with 6062
+            };
+
+            for (const [brand, pattern] of Object.entries(cardPatterns)) {
+                if (pattern.test(cardNumber)) {
+                    return { valid: true, brand };
+                }
+            }
+
+            return { valid: false };
+        }
+
+        function validateInput() {
+            const cardNumber = document.getElementById("card-number").value.trim().replace(/\s+/g, "");
+            const resultDiv = document.getElementById("result");
+
+            if (!cardNumber) {
+                resultDiv.textContent = "Por favor, insira um número de cartão.";
+                resultDiv.className = "result invalid";
+                return;
+            }
+
+            const result = validateCreditCard(cardNumber);
+            if (result.valid) {
+                resultDiv.textContent = `O número do cartão é válido e pertence à bandeira ${result.brand}.`;
+                resultDiv.className = "result valid";
+            } else {
+                resultDiv.textContent = "O número do cartão é inválido.";
+                resultDiv.className = "result invalid";
+            }
+        }
+    </script>
+</body>
+</html>
